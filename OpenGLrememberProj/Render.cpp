@@ -14,6 +14,7 @@
 #include "Primitives.h"
 
 #include "GUItextRectangle.h"
+#include "Normal.h"
 
 bool textureMode = true;
 bool lightMode = true;
@@ -309,16 +310,17 @@ void normal(float *mas) {
 	z = mas[0] * 0 - 0 * mas[1];
 	mas[0] = x;
 	mas[1] = y;
-	mas[2] = z;
-	
+	mas[2] = z;	
 }
+
 
 void treug() {
 	float r = 3.041; //радиус
 	float XYZ[3];
 
 
-	glColor3d(0.7, 0.76, 0.92);
+	//glColor3d(0.7, 0.76, 0.92);
+	glColor4d(1, 0.75, 0.79, 0.7);
 
 	for (int i = 0; i <= 9; i++) {
 		float a = (float)i * 0.55 / (float)10 * 3.1415f * 0.1;
@@ -331,8 +333,8 @@ void treug() {
 		normal(XYZ);
 		glNormal3f(XYZ[0], XYZ[1], XYZ[2]);
 		glVertex3f(4 - cos(a) * r, 11.5 - sin(a) * r, 0);
-		glVertex3f(4 - cos(a) * r, 11.5 - sin(a) * r, 5);
-		glVertex3f(4 - cos(b) * r, 11.5 - sin(b) * r, 5);
+		glVertex3f(4 - cos(a) * r, 11.5 - sin(a) * r, 5);	
+		glVertex3f(4 - cos(b) * r, 11.5 - sin(b) * r, 5);	
 		glVertex3f(4 - cos(b) * r, 11.5 - sin(b) * r, 0);
 		glEnd();
 	}
@@ -346,9 +348,9 @@ void treug() {
 		XYZ[2] = 0;
 		normal(XYZ);
 		glNormal3f(XYZ[0], XYZ[1], XYZ[2]);
-		glVertex3f(4 - cos(a) * r, 11.5 - sin(a) * r, 0);
-		glVertex3f(4 - cos(a) * r, 11.5 - sin(a) * r, 5);
-		glVertex3f(4 - cos(b) * r, 11.5 - sin(b) * r, 5);
+		glVertex3f(4 - cos(a) * r, 11.5 - sin(a) * r, 0);		
+		glVertex3f(4 - cos(a) * r, 11.5 - sin(a) * r, 5);	
+		glVertex3f(4 - cos(b) * r, 11.5 - sin(b) * r, 5);	
 		glVertex3f(4 - cos(b) * r, 11.5 - sin(b) * r, 0);
 		glEnd();
 	}
@@ -358,17 +360,14 @@ void treug() {
 void treug1() {
 	glNormal3d(0, 0, -1);
 	float r = 3.041; //радиус
-	glColor3d(0.3, 0.35, 0.42);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glBegin(GL_TRIANGLE_FAN);
-	glVertex3f(4, 11.5, 0); //центр окружности
-	
-	for (int i = 0; i <= 10; i++) {
-		
+	glVertex3f(4, 11.5, 0); //центр окружности	
+	for (int i = 0; i <= 10; i++) {		
 		float a = (float)i * 0.55 / (float)10 * 3.1415f * 0.1;
 		glVertex3f(4 - cos(a) * r, 11.5 - sin(a) * r, 0);
 	}
-	for (int i = 0; i <= 10; i++) {
-		
+	for (int i = 0; i <= 10; i++) {		
 		float a = (float)i / (float)10 * 3.1415f * (-0.95);
 		glVertex3f(4 - cos(a) * r, 11.5 - sin(a) * r, 0);
 	}
@@ -378,7 +377,7 @@ void treug1() {
 void treug2() {
 	glNormal3d(0, 0, 1);
 	float r = 3.041; //радиус
-	glColor3d(0.62, 0.68, 0.82);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(4, 11.5, 5); //центр окружности
 	for (int i = 0; i <= 10; i++) {
@@ -392,111 +391,136 @@ void treug2() {
 	glEnd();
 }
 
+ //бок впуклости
+void treug3() {
+	float X = 13.66667, Y = -14, R = 19.56;
+	double N[3];
+	double* n = N;
+	glBegin(GL_QUADS);
+	glColor4d(1, 0.75, 0.79, 0.7);
+	for (float p = 1.81; p <= 2.345; p += 0.001) {
+
+		float x1 = X + cos(p) * R;
+		float y1 = Y + sin(p) * R;
+		float x2 = X + cos(p + 0.001) * R;
+		float y2 = Y + sin(p + 0.001) * R;
+		double xx1[3], xx2[3], xx3[3];
+		xx1[0] = x1;
+		xx1[1] = y1;
+		xx1[2] = 0;
+		xx2[0] = x1;
+		xx2[1] = y1;
+		xx2[2] = 5;
+		xx3[0] = x2;
+		xx3[1] = y2;
+		xx3[2] = 0;
+
+		CalcNormal(xx2, xx1, xx3, n);
+		N[0] *= (-1);
+		N[1] *= (-1);
+		glNormal3dv(N);
+		glVertex3f(x1, y1, 0);
+		glVertex3f(x2, y2, 0);
+		glVertex3f(x2, y2, 5);
+		glVertex3f(x1, y1, 5);
+	}
+	glEnd();
+}
+
 void treug0()
 {
+
+	//glBindTexture(GL_TEXTURE_2D, texId);
+	
+	//низ впуклости1
+	glBegin(GL_POLYGON);
+	float X = 13.66667, Y = -14, R = 19.56;
 	glNormal3d(0, 0, -1);
-	glBegin(GL_TRIANGLES);
-	glColor3d(0, 1, 0);
-	glVertex3d(0, 0, 0);
-	glVertex3d(9, 5, 0);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(5, 5, 0);
+	for (float a = 4.95; a <= 5.48; a += 0.001) {
+		float X1 = X - cos(a) * R;
+		float Y1 = Y - sin(a) * R;
+		glVertex3d(X1, Y1, 0);
+	}
+	glEnd();
+	
+	//низ впуклости2
+	glBegin(GL_POLYGON);	
+	glNormal3d(0, 0, -1);
+	glColor4d(1, 0.75, 0.79, 0.7);
+	glVertex3d(2, 4.53, 0);
+	for (float a = 4.95; a <= 5.4863; a += 0.001) {
+
+		float X1 = X - cos(a) * R;
+		float Y1 = Y - sin(a) * R;
+		glVertex3d(X1, Y1, 0);
+	}
 	glEnd();
 
 	glBegin(GL_TRIANGLES);
-	glColor3d(0, 1, 0);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(0, 0, 0);
 	glVertex3d(4, 9, 0);
 	glVertex3d(5, 5, 0);
-	glEnd();
+	glEnd(); 
+
 
 	glBegin(GL_TRIANGLES);
-	glColor3d(0, 1, 0);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(5, 5, 0);
 	glVertex3d(4, 9, 0);
 	glVertex3d(7, 12, 0);
 	glEnd();
 
 	glBegin(GL_TRIANGLES);
-	glColor3d(0, 1, 0);
-	glVertex3d(4, 9, 0);
-	glVertex3d(7, 12, 0);
-	glVertex3d(1, 11, 0);
-	glEnd();
-
-	glBegin(GL_TRIANGLES);
-	glColor3d(0, 1, 0);
-	glVertex3d(0, 0, 0);
-	glVertex3d(9, 5, 0);
-	glVertex3d(5, 5, 0);
-	glEnd();
-
-
-	glBegin(GL_TRIANGLES);
-	glColor3d(0, 1, 0);
-	glVertex3d(0, 0, 0);
-	glVertex3d(4, 9, 0);
-	glVertex3d(5, 5, 0);
-	glEnd();
-
-	glBegin(GL_TRIANGLES);
-	glColor3d(0, 1, 0);
-	glVertex3d(5, 5, 0);
-	glVertex3d(4, 9, 0);
-	glVertex3d(7, 12, 0);
-	glEnd();
-
-	glBegin(GL_TRIANGLES);
-	glColor3d(0, 1, 0);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(4, 9, 0);
 	glVertex3d(7, 12, 0);
 	glVertex3d(1, 11, 0);
 	glEnd();
+
 
 	//верх
 
+	glBegin(GL_POLYGON);
 	glNormal3d(0, 0, 1);
-	glBegin(GL_TRIANGLES);
-	glColor3d(1, 0, 0);
-	glVertex3d(0, 0, 5);
-	glVertex3d(9, 5, 5);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(5, 5, 5);
+	for (float a = 4.95; a <= 5.48; a += 0.001) {
+		float X1 = X - cos(a) * R;
+		float Y1 = Y - sin(a) * R;
+
+		glVertex3d(X1, Y1, 5);
+	}
 	glEnd();
 
 	glBegin(GL_TRIANGLES);
-	glColor3d(1, 0, 0);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(0, 0, 5);
 	glVertex3d(4, 9, 5);
 	glVertex3d(5, 5, 5);
 	glEnd();
 
 	glBegin(GL_TRIANGLES);
-	glColor3d(1, 0, 0);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(5, 5, 5);
 	glVertex3d(4, 9, 5);
 	glVertex3d(7, 12, 5);
 	glEnd();
 
 	glBegin(GL_TRIANGLES);
-	glColor3d(1, 0, 0);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(4, 9, 5);
 	glVertex3d(7, 12, 5);
 	glVertex3d(1, 11, 5);
 	glEnd();
 
-
 	//бока
-	glNormal3d(25, -45, 0);
-	glBegin(GL_QUADS);
-	glColor3d(0, 0, 1);
-	glVertex3d(0, 0, 0);
-	glVertex3d(0, 0, 5);
-	glVertex3d(9, 5, 5);
-	glVertex3d(9, 5, 0);
-	glEnd();
 
 	glNormal3d(-45,20, 0);
-	glBegin(GL_QUADS);
-	glColor4d(1, 0.3, 0.5, 0.9);
+	glBegin(GL_QUADS);	
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(0, 0, 0);
 	glVertex3d(0, 0, 5);
 	glVertex3d(4, 9, 5);
@@ -505,24 +529,17 @@ void treug0()
 
 	glNormal3d(-10, -15, 0);
 	glBegin(GL_QUADS);
-	glColor3d(0.3, 1, 0.7);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(4, 9, 0);
 	glVertex3d(4, 9, 5);
 	glVertex3d(1, 11, 5);
 	glVertex3d(1, 11, 0);
 	glEnd();
 
-	//glBegin(GL_QUADS);
-	//glColor3d(0.1, 0.4, 0.7);
-	//glVertex3d(7, 12, 0);
-	//glVertex3d(7, 12, 5);
-	//glVertex3d(1, 11, 5);
-	//glVertex3d(1, 11, 0);
-	//glEnd();
 
 	glNormal3d(35, -10, 0);
 	glBegin(GL_QUADS);
-	glColor3d(0.6, 0.8, 0.4);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(7, 12, 0);
 	glVertex3d(7, 12, 5);
 	glVertex3d(5, 5, 5);
@@ -531,7 +548,7 @@ void treug0()
 
 	glNormal3d(0, 1, 0);
 	glBegin(GL_QUADS);
-	glColor3d(0.9, 1, 0.4);
+	glColor4d(1, 0.75, 0.79, 0.7);
 	glVertex3d(9, 5, 0);
 	glVertex3d(9, 5, 5);
 	glVertex3d(5, 5, 5);
@@ -541,15 +558,8 @@ void treug0()
 	treug();
 	treug1();
 	treug2();
+	treug3();
 
-	//glPushMatrix();
-
-	//glTranslatef(0, 0, 5);
-	//glBegin(GL_TRIANGLE_FAN);
-	//glColor3d(1, 0, 0);
-	//Cic();
-	//glEnd();
-	//glPopMatrix();
 }
 
 void Render(OpenGL *ogl)
